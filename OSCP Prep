@@ -65,5 +65,26 @@ env                           #show all environment variables
 
 history
 !1
-!!                             #some long command, then only !! to execute it as sudo
+!!                             #some long command, then only !! to execute it as sudo ## in the PWK pdf they say that !! sepeat the last command, but I tried and repeat it with SUDO!
+
+#3.2 Piping and Redirection
+
+echo "test" > redirection_test.txt      #write to the file
+scho "test222" >> redirection_test.txt  #append to the file
+wc -m < redirect_test.txt --> return word count 89
+ls ./test --> error message "no such file" or similar
+ls ./test 2>error.txt --> redirect the error message to file
+
+#3.3 Text Search and Manipulation
+
+grep
+ls -la /usr/bin | grep zip      #show only lines consist zip in them
+sed
+echo "I need to try hard" | sed 's/hard/harder/' --> I need to try harder   #sed perform text editing on files or standard output
+cut
+Echo "I hack binaries, web apps, hkhkhkhkh else" | cut -f 2 -d "," --> web app
+cut -d ":" -f 1 /etc/passwd --> show only usernames from the passwd file
+
+
+
 
