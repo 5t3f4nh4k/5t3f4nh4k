@@ -58,3 +58,12 @@ bash
 # we are in bash again
 echo $othervar --> Globalvar
 ```
+
+env                           #show all environment variables
+
+# Bash History Tricks
+
+history
+!1
+!!                             #some long command, then only !! to execute it as sudo
+
