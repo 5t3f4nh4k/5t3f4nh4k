@@ -1,0 +1,18 @@
+# OSCP Prep
+
+### Basic Linux Commands:
+
+man ls               #man for ls
+man -k passwd        #search in the description for "passwd"
+apropos passwd == man -p passwd
+mkdir "some name"    #create one dir
+mkdir -p test/{one,two,three} # create test parrent dir with 3 dirs inside
+echo $PATH
+which sbd            #search sbd in dirs from $PATH
+sudo updatedb        #update the locate.db
+locate sbd.exe       #search sbd.exe / quicker than find
+sudo find / -name sbd*
+
+### Managing Kali Linux Services
+
+sudo systemctl start ssh  #start ssh service
