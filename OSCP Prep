@@ -32,7 +32,29 @@ sudo dpkg -i man-db_2.7.0.2-5_amd64.deb # -i == --install  ## install package ##
 
 # Bash Environment
 
-echo $PATH                    #
-echo $USER                    #
-echo $PWD                     #
-echo $HOME                    #
+echo $PATH                    #search those dirs, when execute command w/o abs path
+echo $USER                    #display current username
+echo $PWD                     #current dir
+echo $HOME                    #home dir
+
+```
+export b=10.10.11.11          #with export we can use the var from other shells(Global Var) ## example below
+ping -c 2 $b                  #ping with use of var instead the ip address
+```
+
+```example
+echo "$$" --> 1872
+var="My Var"
+echo $var --> My Var
+bash      --> we are in bash now
+echo "$$"  --> 1908
+echo $var   --> nothing
+exit
+# we are in the firsh shell again
+echo $Var --> My Var
+export othervar="Global Var"
+echo $othervar --> Global Var
+bash
+# we are in bash again
+echo $othervar --> Globalvar
+```
