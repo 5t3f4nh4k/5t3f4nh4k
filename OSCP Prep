@@ -1,18 +1,38 @@
 # OSCP Prep
+===========
 
 ### Basic Linux Commands:
 
-man ls               #man for ls
-man -k passwd        #search in the description for "passwd"
-apropos passwd == man -p passwd
-mkdir "some name"    #create one dir
+man ls                        #man for ls
+man -k passwd                 #search in the description for "passwd"
+apropos passwd                # same as "man -p passwd"
+mkdir "some name"             #create one dir
 mkdir -p test/{one,two,three} # create test parrent dir with 3 dirs inside
-echo $PATH
-which sbd            #search sbd in dirs from $PATH
-sudo updatedb        #update the locate.db
-locate sbd.exe       #search sbd.exe / quicker than find
+echo $PATH                    #show dirs in $PATH
+which sbd                     #search sbd in dirs from $PATH
+locate sbd.exe                #search sbd.exe / quicker than find
+sudo updatedb                 #update the locate.db
 sudo find / -name sbd*
 
 ### Managing Kali Linux Services
 
-sudo systemctl start ssh  #start ssh service
+sudo systemctl start ssh      #start ssh service
+sudo ss -antlp | grep sshd    #using ss and grep to confirm that sshd has been started and running
+sudo sustemctl enable ssh     #ssh start at boot  ##we can use apache2 to start HTTP sevice the same way
+systemctl list-unit-files     #see table af all available services
+
+### Searching ,INstalling, Removing Tools
+
+sudo apt update
+apt-cache search pure-ftpd    #check if pure=httpd is in the Kali repos, it searches in the descriptions, not only package name
+apt show resources-agents     #shows description of the resources-agents
+sudo apt install pure-https   #install package
+apt remove --purge pure-ftpd  #uninstall package (purge removes all data)
+sudo dpkg -i man-db_2.7.0.2-5_amd64.deb # -i == --install  ## install package ### don't require to be online #### install with path to deb file
+
+# Bash Environment
+
+echo $PATH                    #
+echo $USER                    #
+echo $PWD                     #
+echo $HOME                    #
