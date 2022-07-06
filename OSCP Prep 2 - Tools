@@ -1,1 +1,13 @@
+#4.1 Netcat           # client mode - check if port is opened // read banner from service listenning on a port // Connect to a network service manually
+
+nc -nv 10.10.1.12 110       #check if 110 port is opened on remote machine // -n skip DNS name // -v verbous
+nc -lvnp 4444               #listen on 4444 // -l create listener // -p listening port number
+
+## Transfer Files
+###on Win (receiving machine):
+nc -lvnp 4444 > incoming.exe
+###on Linux:
+nc -nv 10.10.1.11 4444 < /usr/share/win/.../wget.exe    #don't receive download progress, so give it a time
+
+## Remote Administration with Netcat
 
