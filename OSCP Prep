@@ -125,6 +125,16 @@ axel -a -n 20 -o name.pdf https://site.com/dir/file.pdf #download axelarator -n 
 
 #3.9 Customizing the Bash Environment
 
+export HISTCONTROL=ignoredups         #ignore duplicates // or ignore commands begin with space " " //by default both are ignored
+export HISTIGNORE="&:ls:[bf]g:exit:history"   #ignore frequently used commands ls bg/fg ..,
+export HISTTIMEFORMAT='%F %T ' --> 1 2019-04-23 11:29:53 command ..,
+man strtime                           #other time formats can be found here
+
+# Alias
+
+alias lsa='ls -la'
+unalias lsa             #when lsa error --> lsa: missing operand
+nano ~/.bashrc // ~/.zsh.rc       #permanent alias
 
 
 
