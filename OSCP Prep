@@ -113,3 +113,22 @@ kill 666
 
 #3.7 File and Command Monitoring
 
+tail -f               #observe live the changes
+tail -x               #num of lines
+watch -n 5 w          #observe on 5 seconds w command
+
+#3.8 Downloading Files
+
+wget -O saveName.pdf https://site.com/dir/file.pdf      #save file to local machine
+curl -o saveName.pdf https://site.com/dir/file.pdf      #save file to local machine ## can be used for data transfers to or from dest
+axel -a -n 20 -o name.pdf https://site.com/dir/file.pdf #download axelarator -n treats // -a more info? ##speedup downloads
+
+#3.9 Customizing the Bash Environment
+
+
+
+
+
+
+
+
