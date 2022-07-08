@@ -1,1 +1,21 @@
+#remove password and copy protection from pdf
+qpdf --decrypt /home/user/Desktop/OSCPprep.pdf --password=@Hide01 free.pdf    
+
+#crack WPA2 hash
+aircrack-ng /home/stfo/hs/handshake_*.cap -w /usr/share/wordlists/hashes_2018.txt
+
+#unzip file
+gunzip file.txt.gz
+
+#see % used harddrive
+df -hl
+
+#information about users, currently logged in. Including their username, where they are logged in from, what they are currently doing.
+w   // w -i  //
+
+
+
+
+
+
 
