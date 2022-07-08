@@ -12,5 +12,17 @@ host -l <domain name> <dns server address>
 host -l megacorpone.com ns1.megacorpone.com   //   host -l megacorpone.com ns2.megacorpone.com
 host -t ns megacorpone.com | cut -d " " -f 4
 
+# DNSRecon
+dnsrecon -d megacorpone.com -t axfr     # -d specify domain // -t specify type
+dnsrecon -d megacorpone.com -D ~/list.txt -t brt      #-D contain potential subdomains  // brt = bruteforce
+
+# NDSEnum - те тава е тула баце
+dnsenum zonetransfer.me
+
+№7.2 Port Scanning
+nc -nvv -w 1 -z 10.11.1.220 3388-3390
+
+
+
 
 
