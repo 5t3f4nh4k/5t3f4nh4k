@@ -1,0 +1,16 @@
+#7.1 NDS Enumeration
+host www.site.com           #find IP
+host -t mx site.com         #MX records
+host -t txt site.com        #TXT records
+host idontexist.site.com    #see if site.com has server with hostname "idontexist"
+
+for ip in $(cat list.txt); do host $ip.site.com; done
+
+for ip in $(seq 50 100); do host 38.100.193.$ip; done | grep -v "not found"
+
+host -l <domain name> <dns server address>
+host -l megacorpone.com ns1.megacorpone.com   //   host -l megacorpone.com ns2.megacorpone.com
+host -t ns megacorpone.com | cut -d " " -f 4
+
+
+
