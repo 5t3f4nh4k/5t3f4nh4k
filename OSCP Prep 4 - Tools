@@ -146,5 +146,26 @@ powershell.exe -E ZgB1AG4AYwB0AGkAbwBuACAAUwB0AHIAZQ...==     #paste the base64 
 sudo -lvnp 443    #run commands ;]
 
 #4.4 Wireshark
+## Display Filters:
+tcp.port == 21
 
+# TCPDUMP
+## open pcap file:
+sudo tcpdump -r password_cracking_filtered.pcap
+## read and filter the pcap:
+sudo tcpdump -n -r password_cracking_filtered.pcap | awk -F" " '{print $5}' | sort | uniq -c | head
+### -n skip DNS // -r read from pcap // pipe the output into awk, printing the destination IP address and port (the third space-separated field) and pipe it again to sort and uniq -c to sort and count the number of times the field appears in the capture, respectively. Lastly we use head to only display the first 10 lines of the output:
+### filter traffic from source IP:
+sudo tcpdump -n src host 172.16.40.10 -r password_cracking_filtered.pcap
+### filter only traffic to destination IP:
+sudo tcpdump -n dst host 172.16.40.10 -r password_cracking_filtered.pcap
+### filter traffic by port number(source and destination):
+sudo tcpdump -n port 81 -r password_cracking_filtered.pcap
+### -X print data in both Hex and ASCII format:
+sudo tcpdump -nX -r password_cracking_filtered.pcap
+#4.5.2 Advanced Header Filtering
+###Converting the binary bits to decimal in bash:
+echo "$((2#00011000))"        # --> give us 24 (in the example) //  00011000 = 24 in decimal
+###we want only packets with ACK and PSH flags set on:
+sudo tcpdump -A -n 'tcp[13] = 24' -r password_cracking_filtered.pcap    #-A print the packets in ASCII // tcp[13] is 14th byte, because start counting from 0 //
 
