@@ -9,20 +9,81 @@ for ip in $(cat list.txt); do host $ip.site.com; done
 for ip in $(seq 50 100); do host 38.100.193.$ip; done | grep -v "not found"
 
 host -l <domain name> <dns server address>
-host -l megacorpone.com ns1.megacorpone.com   //   host -l megacorpone.com ns2.megacorpone.com
+host -l megacorpone.com ns1.megacorpone.com   /and for the other name servers too/   host -l megacorpone.com ns2.megacorpone.com
 host -t ns megacorpone.com | cut -d " " -f 4
 
+#7.1.6 Relevant Tools in Kali Linux
 # DNSRecon
 dnsrecon -d megacorpone.com -t axfr     # -d specify domain // -t specify type
-dnsrecon -d megacorpone.com -D ~/list.txt -t brt      #-D contain potential subdomains  // brt = bruteforce
+dnsrecon -d megacorpone.com -D ~/list.txt -t brt      #Brute forcing hostnames //-D contain potential subdomains  // brt = bruteforce
 
-# NDSEnum - те тава е тула баце
-dnsenum zonetransfer.me
+# DNSEnum - те тава е тула баце
+dnsenum zonetransfer.me       #Using dnsenum to perform a zone transfer.
 
-№7.2 Port Scanning
-nc -nvv -w 1 -z 10.11.1.220 3388-3390
+#7.2 Port Scanning
+nc -nvv -w 1 -z 10.11.1.220 3388-3390         #Using nc to perform a TCP port scan
+nc -nv -u -z -w 1 10.11.1.115 160-162         #Using Netcat to perform a UDP port scan
 
+## Nmap:
 
+###Configuring our iptables rules for the scan:
+sudo iptables -I INPUT 1 -s 10.11.1.220 -j ACCEPT
+sudo iptables -I OUTPUT 1 -d 10.11.1.220 -j ACCEPT
+sudo iptables -Z
+###run nmap:
+nmap 10.11.1.220
+###Using iptables to monitor nmap traffic for a top 1000 port scan:
+sudo iptables -vn -L
+###use iptables -Z to zero the packet and byte counters in all chains again and run another nmap scan using -p to specify ALL TCP ports:
+sudo iptables -Z
+nmap -p 1-65535 10.11.1.220
+###Using iptables to monitor nmap traffic for a port scan on ALL TCP ports:
+sudo iptables -vn -L
+##7.2.2.2 Stealth / SYN Scanning      #default, when no scan technique is set, and user have raw socket privileges
+sudo nmap -sS 10.11.1.220
+##7.2.2.3 TCP Connect Scanning        #default when user does not have raw socket privileges
+nmap -sT 10.11.1.220
+##UDP scan
+sudo nmap -sU 10.11.1.115
+sudo nmap -sS -sU 10.11.1.115       #more complete picture of our target!!
+##7.2.2.5 Network Sweeping
+nmap -sn 10.11.1.1-255
+###another way:
+nmap -v -sn 10.11.1.1-254 -oG ping-sweep.txt
+grep Up ping-sweep.txt | cut -d " " -f 2        #show only the ip-s, that we want
+###another way is to target specific service on port:
+nmap -p 80 10.11.1.1-254 -oG web-sweep.txt
+grep open web-sweep.txt | cut -d" " -f2
+###another way
+nmap -sT -A --top-ports=20 10.11.1.1-254 -oG top-port-sweep.txt     #scan top 20 ports only
+###check nmap-services file:
+cat /usr/share/nmap/nmap-services     #stats and comments for services and ports
+##7.2.2.6 OS Fingerprinting
+sudo nmap -O 10.11.1.220
+#7.2.2.7 Banner Grabbing/Service Enumeration
+nmap -sV -sT -A 10.11.1.220
+#7.2.2.8 Nmap Scripting Engine (NSE)
+##Using nmap’s scripting engine (NSE) for OS fingerprinting:
+nmap 10.11.1.220 --script=smb-os-discovery
+##Using nmap to perform a DNS zone transfer
+nmap --script=dns-zone-transfer -p 53 ns2.megacorpone.com
+##Using the --script-help option to view more information about a script:
+nmap --script-help dns-zone-transfer
+
+#7.2.3 Masscan
+##Using masscan to look for all web servers within a class A subnet:
+sudo masscan -p80 10.0.0.0/8
+##Using masscan with more advanced options:
+sudo masscan -p80 10.11.1.0/24 --rate=1000 -e tap0 --router-ip 10.11.0.1
+
+#7.3 SMB Enumeration
+##Using nmap to scan for the NetBIOS:
+nmap -v -p 139,445 -oG smb.txt 10.11.1.1-254
+##Using nbtscan to collect additional NetBIOS information
+sudo nbtscan -r 10.11.1.0/24
+##7.3.2 Nmap SMB NSE Scripts
+##Finding various nmap SMB NSE scripts:
+ls -1 /usr/share/nmap/scripts/smb*
 
 
 
